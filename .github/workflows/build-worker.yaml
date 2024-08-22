@@ -51,7 +51,7 @@ jobs:
       run: echo "$EVENT"
 
   iac-scan:
-    needs: [lint-check,format-check]
+    needs: [unit-tests]
     runs-on: ubuntu-latest
     permissions:
       contents: read
