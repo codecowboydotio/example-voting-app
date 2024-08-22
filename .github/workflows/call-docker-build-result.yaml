@@ -20,7 +20,6 @@ on:
 
 jobs:
   call-docker-build:
-    steps:
       name: Result Call Docker Build
       uses: dockersamples/.github/.github/workflows/reusable-docker-build.yaml@main
       permissions:
