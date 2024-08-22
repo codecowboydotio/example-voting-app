@@ -70,7 +70,7 @@ jobs:
           sleep 5
 
   build-and-scan-image:
-    needs: [iac-scan,unit-tests]
+    needs: [unit-tests]
     runs-on: ubuntu-latest
     permissions:
       contents: read
