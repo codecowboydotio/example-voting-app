@@ -4,7 +4,7 @@
 # documentation.
 
 # TEST
-name: Create and publish a Docker image
+name: Build voting app
 
 on:
   push:
