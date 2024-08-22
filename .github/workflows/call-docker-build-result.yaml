@@ -81,7 +81,7 @@ jobs:
       ### defaults to false
       # comment-enable: false
   build-and-scan-image:
-  needs: [unit-tests]
+  needs: [call-docker-build]
   runs-on: ubuntu-latest
   permissions:
     contents: read
