@@ -21,7 +21,7 @@ on:
 jobs:
   call-docker-build:
 
-    - name: Result Call Docker Build
+    name: Result Call Docker Build
 
     uses: dockersamples/.github/.github/workflows/reusable-docker-build.yaml@main
 
@@ -80,10 +80,27 @@ jobs:
       ### Create a PR comment with image tags and labels
       ### defaults to false
       # comment-enable: false
+  build-and-scan-image:
+  needs: [unit-tests]
+  runs-on: ubuntu-latest
+  permissions:
+    contents: read
+    packages: write
+
+  steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Build container images
+      run: |
+        docker build --tag ${{ github.event.repository.name }} .
+        docker images
     - name: Run Orca Container Image Scan
       run: |
-        curl -LO "https://download.sysdig.com/scanning/bin/sysdig-cli-scanner/$(curl -L -s https://download.sysdig.com/scanning/sysdig-cli-scanner/latest_version.txt)/linux/amd64/sysdig-cli-scanner"
+        curl -LO "https://download.sysdig.com/scanning/bin/sysdig-cli-scanner/$(curl -L -s https://download
+.sysdig.com/scanning/sysdig-cli-scanner/latest_version.txt)/linux/amd64/sysdig-cli-scanner"
         chmod 700 ./sysdig-cli-scanner
         echo "running container image scan"
-        SECURE_API_TOKEN=${{ secrets.SYSDIG_API_TOKEN }} ./sysdig-cli-scanner --apiurl ${{ secrets.SYSDIG_URL }} ${{ github.event.repository.name }}
+        SECURE_API_TOKEN=${{ secrets.SYSDIG_API_TOKEN }} ./sysdig-cli-scanner --apiurl ${{ secrets.SYSDIG_U
+RL }} ${{ github.event.repository.name }}
 
