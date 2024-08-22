@@ -82,7 +82,7 @@ jobs:
   
       - name: Build container images
         run: |
-          docker build --tag ${{ github.event.repository.name }} .
+          docker build --tag ${{ github.event.repository.name }} vote/.
           docker images
       - name: Run Orca Container Image Scan
         run: |
