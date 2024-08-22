@@ -91,6 +91,12 @@ jobs:
           echo "running container image scan"
           SECURE_API_TOKEN=${{ secrets.SYSDIG_API_TOKEN }} ./sysdig-cli-scanner --apiurl ${{ secrets.SYSDIG_URL }} ${{ github.event.repository.name }}
 
+  deploy:
+    needs: [iac-scan,build-adn-scan-image]
+    name: deploy
+    runs-on: ubuntu-latest
+    steps:
+    - run: echo "Your your deployment steps go here..."
 #  push-to-registry:
 #    needs: [build-and-scan-image]
 #    runs-on: ubuntu-latest
