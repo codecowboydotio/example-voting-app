@@ -20,40 +20,30 @@ on:
 
 jobs:
   call-docker-build:
-
     name: Result Call Docker Build
-
     uses: dockersamples/.github/.github/workflows/reusable-docker-build.yaml@main
-
     permissions:
       contents: read
       packages: write # needed to push docker image to ghcr.io
       pull-requests: write # needed to create and update comments in PRs
-    
     secrets:
-
       # Only needed if with:dockerhub-enable is true below
       dockerhub-username: ${{ secrets.DOCKERHUB_USERNAME }}
-
       # Only needed if with:dockerhub-enable is true below
       dockerhub-token: ${{ secrets.DOCKERHUB_TOKEN }}
-
     with:
-      
       ### REQUIRED
       ### ENABLE ONE OR BOTH REGISTRIES
       ### tell docker where to push.
       ### NOTE if Docker Hub is set to true, you must set secrets above and also add account/repo/tags below
       dockerhub-enable: false
       ghcr-enable: false
-
       ### REQUIRED 
       ### A list of the account/repo names for docker build. List should match what's enabled above
       ### defaults to:
       image-names: |
         ghcr.io/dockersamples/example-voting-app-result
         dockersamples/examplevotingapp_result
-      
       ### REQUIRED set rules for tagging images, based on special action syntax:
       ### https://github.com/docker/metadata-action#tags-input
       ### defaults to:
@@ -62,7 +52,6 @@ jobs:
         type=raw,value=before,enable=${{ endsWith(github.ref, github.event.repository.default_branch) }}
         type=raw,value=after,enable=${{ endsWith(github.ref, github.event.repository.default_branch) }}
         type=ref,event=pr
-      
       ### path to where docker should copy files into image
       ### defaults to root of repository (.)
       context: result
@@ -80,25 +69,26 @@ jobs:
       ### Create a PR comment with image tags and labels
       ### defaults to false
       # comment-enable: false
+
   build-and-scan-image:
-  #needs: [call-docker-build]
-  runs-on: ubuntu-latest
-  permissions:
-    contents: read
-    packages: write
+    needs: [call-docker-build]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
 
-  steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-    - name: Build container images
-      run: |
-        docker build --tag ${{ github.event.repository.name }} .
-        docker images
-    - name: Run Orca Container Image Scan
-      run: |
-        curl -LO "https://download.sysdig.com/scanning/bin/sysdig-cli-scanner/$(curl -L -s https://download.sysdig.com/scanning/sysdig-cli-scanner/latest_version.txt)/linux/amd64/sysdig-cli-scanner"
-        chmod 700 ./sysdig-cli-scanner
-        echo "running container image scan"
-        SECURE_API_TOKEN=${{ secrets.SYSDIG_API_TOKEN }} ./sysdig-cli-scanner --apiurl ${{ secrets.SYSDIG_URL }} ${{ github.event.repository.name }}
+      - name: Build container images
+        run: |
+          docker build --tag ${{ github.event.repository.name }} .
+          docker images
+      - name: Run Orca Container Image Scan
+        run: |
+          curl -LO "https://download.sysdig.com/scanning/bin/sysdig-cli-scanner/$(curl -L -s https://download.sysdig.com/scanning/sysdig-cli-scanner/latest_version.txt)/linux/amd64/sysdig-cli-scanner"
+          chmod 700 ./sysdig-cli-scanner
+          echo "running container image scan"
+          SECURE_API_TOKEN=${{ secrets.SYSDIG_API_TOKEN }} ./sysdig-cli-scanner --apiurl ${{ secrets.SYSDIG_URL }} ${{ github.event.repository.name }}
 
