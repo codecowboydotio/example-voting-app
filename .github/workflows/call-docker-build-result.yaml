@@ -7,16 +7,16 @@ on:
     branches:
       - 'main'
     # only build when important files change
-    paths:
-      - 'result/**'
-      - '.github/workflows/call-docker-build-result.yaml'
+#    paths:
+#      - 'result/**'
+#      - '.github/workflows/call-docker-build-result.yaml'
   pull_request:
     branches:
       - 'main'
     # only build when important files change
-    paths:
-      - 'result/**'
-      - '.github/workflows/call-docker-build-result.yaml'
+#    paths:
+#      - 'result/**'
+#      - '.github/workflows/call-docker-build-result.yaml'
 
 jobs:
   call-docker-build:
@@ -44,8 +44,8 @@ jobs:
       ### ENABLE ONE OR BOTH REGISTRIES
       ### tell docker where to push.
       ### NOTE if Docker Hub is set to true, you must set secrets above and also add account/repo/tags below
-      dockerhub-enable: true
-      ghcr-enable: true
+      dockerhub-enable: false
+      ghcr-enable: false
 
       ### REQUIRED 
       ### A list of the account/repo names for docker build. List should match what's enabled above
